@@ -21,9 +21,9 @@ func CodeMap() map[string]string {
 	return emojiCodeMap
 }
 
-func AllCodeMap() map[string]string {
-	return allCodeMap
-}
+// func AllCodeMap() map[string]string {
+// 	return allCodeMap
+// }
 
 func emojize(x string) string {
 	str, ok := emojiCodeMap[x]
