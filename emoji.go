@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 	"unicode"
 )
 
@@ -27,6 +28,17 @@ func CodeMap() map[string]string {
 
 func emojize(x string) string {
 	str, ok := emojiCodeMap[x]
+	if ok {
+		return str + ReplacePadding
+	}
+	return x
+}
+
+func demoji(x string) string {
+	x = strings.Trim(x, " ")
+	s := fmt.Sprintf("%q", x)
+	str, ok := UnicodeEmojeMap[s]
+
 	if ok {
 		return str + ReplacePadding
 	}
@@ -56,6 +68,29 @@ func replaseEmoji(input *bytes.Buffer) string {
 	}
 }
 
+func replaseUnicode(input *bytes.Buffer) string {
+	emoji := bytes.NewBufferString("\\")
+
+	for {
+		i, _, err := input.ReadRune()
+		if err != nil {
+			// not replase
+			return emoji.String()
+		}
+
+		if i == 92 && emoji.Len() == 1 {
+			return emoji.String() + replaseUnicode(input)
+		}
+
+		emoji.WriteRune(i)
+
+		switch {
+		case unicode.IsSpace(i):
+			return demoji(emoji.String())
+		}
+	}
+}
+
 func compile(x string) string {
 	if x == "" {
 		return ""
@@ -74,6 +109,8 @@ func compile(x string) string {
 			output.WriteRune(i)
 		case ':':
 			output.WriteString(replaseEmoji(input))
+		case 92:
+			output.WriteString(replaseUnicode(input))
 		}
 	}
 	return output.String()
@@ -138,4 +175,17 @@ func Sprintf(format string, a ...interface{}) string {
 // Errorf is fmt.Errorf which supports emoji
 func Errorf(format string, a ...interface{}) error {
 	return errors.New(Sprintf(format, a...))
+}
+
+func Demojize(a ...interface{}) string {
+	str := Sprintf("%+q", a)
+	converted := compile(str)
+	return fmt.Sprint(converted)
+}
+
+func init() {
+	for k, v := range emojiCodeMap {
+		s := fmt.Sprintf("%+q", v)
+		UnicodeEmojeMap[s] = k
+	}
 }
