@@ -150,5 +150,5 @@ func init() {
 		s := fmt.Sprintf("%+q", v)
 		UnicodeEmojeMap[s] = k
 	}
-	re = regexp.MustCompile(`[[:^ascii:]]+`)
+	re = regexp.MustCompile(`[[:^ascii:]]`)
 }
