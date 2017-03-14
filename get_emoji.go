@@ -20,21 +20,34 @@ import (
 	"strings"
 )
 
-func StringToLines(s string) []string {
+func StringToLines(text string) []string {
 	var lines []string
 	var allRow []string
+	var replacer *strings.Replacer
 
-	scanner := bufio.NewScanner(strings.NewReader(s))
+	scanner := bufio.NewScanner(strings.NewReader(text))
 	for scanner.Scan() {
-		replacer := strings.NewReplacer("+", "000", "&", "and")
-		result := replacer.Replace(scanner.Text())
 
-		if len(result) != 0 {
-			line := strings.TrimSpace(result)
-			lines = append(lines, line)
+		if ok := strings.HasPrefix(scanner.Text(), "U+"); ok {
+			unicodes := strings.Split(scanner.Text(), " ")
+			for _, v := range unicodes {
+				if len(v) == 6 {
+					replacer = strings.NewReplacer(`U+`, `\u`)
+				} else {
+					replacer = strings.NewReplacer(`+`, `000`, `U`, `\U`)
+				}
+				result := replacer.Replace(v)
+				lines = append(lines, strings.TrimSpace(result))
+			}
+
+		} else {
+
+			replacer = strings.NewReplacer("&", "and", "+", "000", "&", "and", " ", "_", ":", "", ",", "", "“", "", "”", "")
+			result := replacer.Replace(scanner.Text())
+			lines = append(lines, strings.TrimSpace(result))
 		}
 	}
-	allRow = append(allRow, strings.Join(lines, ", "))
+	allRow = append(allRow, strings.Join(lines, ""))
 
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
@@ -45,27 +58,24 @@ func StringToLines(s string) []string {
 
 func processTr(tr *goquery.Selection, fRstOutput *os.File) {
 	a := []string{}
-	header := []string{"Count", "Code", "Browser", "B&W*", "Apple", "Andr",
-		"One", "Twit", "Wind", "GMail", "DCM", "KDDI", "SB",
-		"Name", "Version", "Default", "Annotations"}
+	header := []string{"Count", "Code", "Appl", "Goog", "Twtr.", "One", "FB", "FBM", "Sams.", "Wind.", "GMail", "SB", "DCM", "KDDI", "Name", "Date", "Keywords"}
 	dict := map[string]string{}
 
 	tr.Find("td").Each(func(indexOfTd int, td *goquery.Selection) {
 		lines := StringToLines(td.Text())
 		for _, line := range lines {
-			if line != " " {
-				a = append(a, line)
-			}
+			a = append(a, line)
 		}
 	})
+
 	for k, v := range header {
-		if len(a) != 0 {
+		if len(a) == 17 {
 			dict[v] = a[k]
 		}
 	}
-	replacer := strings.NewReplacer(" ", "_", ":", "")
-	name := replacer.Replace(dict["Annotations"])
-	code := strings.Replace(dict["Code"], "U", "\\U", -1)
+
+	name := dict["Name"]
+	code := dict["Code"]
 	str := name + ":" + code
 	if str != ":" {
 		name = ":" + name + ":"
