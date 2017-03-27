@@ -1233,7 +1233,7 @@ var emojiCodeMap = map[string]string{
 	":mouth:":                             "\U0001F444",
 	":kiss_mark:":                         "\U0001F48B",
 	":heart_with_arrow:":                  "\U0001F498",
-	":red_heart:":                         "\u2764",
+	":heavy_black_heart:":                 "\u2764",
 	":beating_heart:":                     "\U0001F493",
 	":broken_heart:":                      "\U0001F494",
 	":two_hearts:":                        "\U0001F495",
