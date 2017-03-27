@@ -16,7 +16,7 @@ var emojiCodeMap = map[string]string{
 	":face_savouring_delicious_food:":                           "\U0001F60B",
 	":smiling_face_with_sunglasses:":                            "\U0001F60E",
 	":smiling_face_with_heart-eyes:":                            "\U0001F60D",
-	":face_blowing_a_kiss:":                                     "\U0001F618",
+	":face_throwing_a_kiss:":                                    "\U0001F618",
 	":kissing_face:":                                            "\U0001F617",
 	":kissing_face_with_smiling_eyes:":                          "\U0001F619",
 	":kissing_face_with_closed_eyes:":                           "\U0001F61A",
