@@ -142,7 +142,9 @@ func Demojize(a ...interface{}) string {
 		unicode := fmt.Sprintf("%+q", m)
 		return UnicodeEmojeMap[unicode]
 	})
-	return converted
+	re := regexp.MustCompile("[*]")
+	res := re.Split(converted, -1)
+	return res[0][1 : len(res[0])-1]
 }
 
 func init() {

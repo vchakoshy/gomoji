@@ -1389,7 +1389,7 @@ var emojiCodeMap = map[string]string{
 	":deciduous_tree:":                    "\U0001F333",
 	":palm_tree:":                         "\U0001F334",
 	":cactus:":                            "\U0001F335",
-	":sheaf_of_rice:":                     "\U0001F33E",
+	":ear_of_rice:":                       "\U0001F33E",
 	":herb:":                              "\U0001F33F",
 	":shamrock:":                          "\u2618",
 	":four_leaf_clover:":                  "\U0001F340",
