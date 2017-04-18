@@ -140,7 +140,12 @@ func Demojize(a ...interface{}) string {
 	str := Sprint(a)
 	converted := re.ReplaceAllStringFunc(str, func(m string) string {
 		unicode := fmt.Sprintf("%+q", m)
-		return UnicodeEmojeMap[unicode]
+		s := UnicodeEmojeMap[unicode]
+		if len(s) != 0 {
+			return s
+		} else {
+			return m
+		}
 	})
 	re := regexp.MustCompile("[*]")
 	res := re.Split(converted, -1)
