@@ -138,7 +138,6 @@ func Errorf(format string, a ...interface{}) error {
 
 func Demojize(a ...interface{}) string {
 	str := Sprint(a)
-	fmt.Println(str)
 	converted := re.ReplaceAllStringFunc(str, func(m string) string {
 		unicode := fmt.Sprintf("%+q", m)
 		s := UnicodeEmojeMap[unicode]
