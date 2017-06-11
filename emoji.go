@@ -151,6 +151,9 @@ func Demojize(a ...interface{}) string {
 }
 
 func init() {
+	for k, v := range aliasCodeMap {
+		emojiCodeMap[k] = v
+	}
 	for k, v := range emojiCodeMap {
 		s := fmt.Sprintf("%+q", v)
 		UnicodeEmojeMap[s] = k
